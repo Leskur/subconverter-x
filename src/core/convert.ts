@@ -18,7 +18,7 @@ const DEFAULT_FALLBACK_USER_AGENT =
 const CLIENT_UA: Record<string, string> = {
   clash: 'ClashforWindows/0.20.39',
   surge: 'Surge/2024',
-  singbox: 'sing-box/1.9.0',
+  singbox: 'SFA/1.13.13 (678; sing-box 1.13.13; language zh_CN)',
 }
 
 function isBrowserUserAgent(userAgent: string | undefined): boolean {
@@ -52,8 +52,17 @@ export async function convertSubscription(
     requestHeaders: input.requestHeaders,
     overrideUserAgent: ingestUa,
   })
-  let { format, nodes, proxyGroups, rules, topLevel } = parseSubscription(body)
+  let { format, nodes, proxyGroups, rules, topLevel, raw } = parseSubscription(body)
   logRequest('parsed', { format, nodes: nodes.length })
+
+  if (format === 'singbox' && raw) {
+    return {
+      body: raw,
+      contentType: 'application/json; charset=utf-8',
+      client: 'singbox',
+      nodeCount: 0,
+    }
+  }
 
   const fallbackUa = options.fallbackUserAgent ?? DEFAULT_FALLBACK_USER_AGENT
   const shouldRetry =
