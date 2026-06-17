@@ -15,8 +15,19 @@ export interface ConvertOptions extends IngestOptions {
 const DEFAULT_FALLBACK_USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
 
+const CLIENT_UA: Record<string, string> = {
+  clash: 'ClashforWindows/0.20.39',
+  surge: 'Surge/2024',
+  singbox: 'sing-box/1.9.0',
+}
+
 function isBrowserUserAgent(userAgent: string | undefined): boolean {
   return !!userAgent && /mozilla\//i.test(userAgent)
+}
+
+function resolveIngestUserAgent(forceClient: string | undefined): string | undefined {
+  if (!forceClient) return undefined
+  return CLIENT_UA[forceClient]
 }
 
 export async function fetchRawSubscription(
@@ -34,10 +45,12 @@ export async function convertSubscription(
   options: ConvertOptions = {},
 ): Promise<ConvertResult> {
   const userAgent = input.requestHeaders?.get('user-agent') ?? undefined
+  const ingestUa = resolveIngestUserAgent(input.forceClient)
 
   const body = await ingestSubscription(input.upstreamUrl, {
     ...options,
     requestHeaders: input.requestHeaders,
+    overrideUserAgent: ingestUa,
   })
   let { format, nodes, proxyGroups, rules, topLevel } = parseSubscription(body)
   logRequest('parsed', { format, nodes: nodes.length })
