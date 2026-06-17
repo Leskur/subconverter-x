@@ -59,7 +59,7 @@ async function sendNodeResponse(webResponse: Response, res: import('node:http').
   res.end(body)
 }
 
-export async function serve(port = 3000, host = '0.0.0.0'): Promise<void> {
+export async function serve(port = 15500, host = '0.0.0.0'): Promise<void> {
   const server = createServer((req, res) => {
     void (async () => {
       try {
@@ -94,14 +94,14 @@ async function runCli(argv: string[]): Promise<void> {
   if (command === 'serve') {
     const portArg = argv.find((arg) => arg.startsWith('--port='))
     const hostArg = argv.find((arg) => arg.startsWith('--host='))
-    const port = portArg ? Number(portArg.split('=')[1]) : 3000
+    const port = portArg ? Number(portArg.split('=')[1]) : 15500
     const host = hostArg ? hostArg.split('=')[1] : '0.0.0.0'
     await serve(port, host)
     return
   }
 
   console.log(`Usage:
-  subconverter-x serve [--host=0.0.0.0] [--port=3000]
+  subconverter-x serve [--host=0.0.0.0] [--port=15500]
 
 HTTP API:
   GET /health

@@ -1,7 +1,7 @@
 {
   "main": "dist/standalone.cjs",
   "mainFormat": "commonjs",
-  "output": "dist/subconverter-x",
+  "output": "dist/subconverter-x.blob",
   "disableExperimentalSEAWarning": true,
   "useCodeCache": false,
   "useSnapshot": false
