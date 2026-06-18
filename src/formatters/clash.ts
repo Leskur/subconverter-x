@@ -116,16 +116,22 @@ export function formatClashProxies(nodes: ProxyNode[], extras?: ClashExtras): st
     }
   })
 
+  const nodeNames = nodes.map((node) => node.name)
+
+  const fillProxies = (group: unknown): unknown => {
+    if (!group || typeof group !== 'object') return group
+    const g = group as Record<string, unknown>
+    const proxies = g['proxies']
+    if (Array.isArray(proxies) && proxies.length === 0) {
+      return { ...g, proxies: nodeNames }
+    }
+    return g
+  }
+
   const groups =
     extras?.proxyGroups && extras.proxyGroups.length > 0
-      ? extras.proxyGroups
-      : [
-          {
-            name: 'PROXY',
-            type: 'select',
-            proxies: nodes.map((node) => node.name),
-          },
-        ]
+      ? extras.proxyGroups.map(fillProxies)
+      : [{ name: 'PROXY', type: 'select', proxies: nodeNames }]
 
   const output: Record<string, unknown> = {
     ...(extras?.topLevel ?? {}),
