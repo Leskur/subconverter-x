@@ -1,5 +1,5 @@
 function timestamp(): string {
-  return new Date().toISOString()
+  return new Date().toLocaleString('sv').replace(' ', 'T')
 }
 
 export function logRequest(message: string, fields: Record<string, unknown> = {}): void {

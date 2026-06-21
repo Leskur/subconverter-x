@@ -1,5 +1,5 @@
 import { stringify } from 'yaml'
-import type { ProxyNode, ShadowsocksProxy, TrojanProxy, VlessProxy, VmessProxy } from '../types/proxy.js'
+import type { Hysteria2Proxy, ProxyNode, ShadowsocksProxy, TrojanProxy, VlessProxy, VmessProxy } from '../types/proxy.js'
 
 function vlessProxy(node: VlessProxy): Record<string, unknown> {
   const proxy: Record<string, unknown> = {
@@ -79,6 +79,23 @@ function vmessProxy(node: VmessProxy): Record<string, unknown> {
   return proxy
 }
 
+function hysteria2Proxy(node: Hysteria2Proxy): Record<string, unknown> {
+  const proxy: Record<string, unknown> = {
+    name: node.name,
+    type: 'hysteria2',
+    server: node.server,
+    port: node.port,
+    password: node.password,
+  }
+
+  if (node.sni) proxy['sni'] = node.sni
+  if (node.insecure) proxy['skip-cert-verify'] = true
+  if (node.obfs) proxy['obfs'] = node.obfs
+  if (node.obfsPassword) proxy['obfs-password'] = node.obfsPassword
+
+  return proxy
+}
+
 function trojanProxy(node: TrojanProxy): Record<string, unknown> {
   const proxy: Record<string, unknown> = {
     name: node.name,
@@ -113,6 +130,8 @@ export function formatClashProxies(nodes: ProxyNode[], extras?: ClashExtras): st
         return trojanProxy(node)
       case 'vmess':
         return vmessProxy(node)
+      case 'hysteria2':
+        return hysteria2Proxy(node)
     }
   })
 

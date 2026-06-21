@@ -1,6 +1,6 @@
-export type ProxyType = 'vless' | 'shadowsocks' | 'trojan' | 'vmess'
+export type ProxyType = 'vless' | 'shadowsocks' | 'trojan' | 'vmess' | 'hysteria2'
 
-export type ClientType = 'singbox' | 'clash' | 'surge'
+export type ClientType = 'singbox' | 'clash' | 'surge' | 'surfboard' | 'loon' | 'quanx'
 
 export interface BaseProxy {
   type: ProxyType
@@ -61,12 +61,23 @@ export interface VmessProxy extends BaseProxy {
   path?: string
 }
 
-export type ProxyNode = VlessProxy | ShadowsocksProxy | TrojanProxy | VmessProxy
+export interface Hysteria2Proxy extends BaseProxy {
+  type: 'hysteria2'
+  password: string
+  sni?: string
+  insecure?: boolean
+  obfs?: string
+  obfsPassword?: string
+  pinSHA256?: string
+}
+
+export type ProxyNode = VlessProxy | ShadowsocksProxy | TrojanProxy | VmessProxy | Hysteria2Proxy
 
 export interface ConvertInput {
   upstreamUrl: string
   requestHeaders?: Headers
   forceClient?: ClientType
+  managedConfigUrl?: string
 }
 
 export interface ConvertResult {

@@ -5,12 +5,14 @@ import { parseShadowsocksLine } from './parsers/shadowsocks.js'
 import { parseTrojanLine } from './parsers/trojan.js'
 import { parseVlessLine } from './parsers/vless.js'
 import { parseVmessLine } from './parsers/vmess.js'
+import { parseHysteria2Line } from './parsers/hysteria2.js'
 
 const PARSERS: Array<(line: string) => ProxyNode | null> = [
   parseVlessLine,
   parseVmessLine,
   parseShadowsocksLine,
   parseTrojanLine,
+  parseHysteria2Line,
 ]
 
 export function parseProxyLine(line: string): ProxyNode | null {

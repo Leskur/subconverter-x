@@ -3,7 +3,7 @@ import type { ConvertInput, ConvertResult } from '../types/proxy.js'
 import { formatProxies } from './format.js'
 import { ingestSubscription, type IngestOptions } from './ingest.js'
 import { parseProxyLines, parseSubscription } from './parse.js'
-import { resolveClient } from './route.js'
+import { resolveClient } from './client.js'
 import { resolveClashExtras } from '../profiles/merge.js'
 import { rulesStore } from '../profiles/store.js'
 import { templateStore } from '../profiles/templates.js'
@@ -146,7 +146,7 @@ export async function convertSubscription(
     clashExtras = resolveClashExtras(rulesConfig, { proxyGroups: resolvedProxyGroups, rules, topLevel: resolvedTopLevel })
   }
 
-  const formatted = formatProxies(nodes, client, clashExtras)
+  const formatted = formatProxies(nodes, client, clashExtras, input.managedConfigUrl)
   const proxyGroupCount = clashExtras?.proxyGroups?.length
 
   return {

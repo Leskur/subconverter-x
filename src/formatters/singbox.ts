@@ -1,4 +1,5 @@
 import type {
+  Hysteria2Proxy,
   ProxyNode,
   ShadowsocksProxy,
   TrojanProxy,
@@ -156,6 +157,34 @@ function vmessOutbound(node: VmessProxy): Record<string, unknown> {
   return outbound
 }
 
+function hysteria2Outbound(node: Hysteria2Proxy): Record<string, unknown> {
+  const outbound: Record<string, unknown> = {
+    type: 'hysteria2',
+    tag: node.name,
+    server: node.server,
+    server_port: node.port,
+    password: node.password,
+  }
+
+  if (node.sni || node.insecure || node.pinSHA256) {
+    outbound.tls = {
+      enabled: true,
+      server_name: node.sni,
+      insecure: node.insecure ?? false,
+      ...(node.pinSHA256 ? { certificate_path: undefined, pinned_certificate: node.pinSHA256 } : {}),
+    }
+  }
+
+  if (node.obfs) {
+    outbound.obfs = {
+      type: node.obfs,
+      password: node.obfsPassword,
+    }
+  }
+
+  return outbound
+}
+
 function trojanOutbound(node: TrojanProxy): Record<string, unknown> {
   const outbound: Record<string, unknown> = {
     type: 'trojan',
@@ -185,6 +214,8 @@ export function formatSingboxOutbounds(nodes: ProxyNode[]): string {
         return trojanOutbound(node)
       case 'vmess':
         return vmessOutbound(node)
+      case 'hysteria2':
+        return hysteria2Outbound(node)
     }
   })
 

@@ -12,6 +12,11 @@ const CLIENT_ALIASES: Record<string, ClientType> = {
   meta: 'clash',
   surge: 'surge',
   shadowrocket: 'surge',
+  surfboard: 'surfboard',
+  loon: 'loon',
+  quanx: 'quanx',
+  quantumult: 'quanx',
+  'quantumult x': 'quanx',
 }
 
 export function normalizeClient(value: string | undefined): ClientType | null {
@@ -34,6 +39,18 @@ export function detectClientFromUserAgent(userAgent: string | undefined): Client
 
   if (ua.includes('surge') || ua.includes('shadowrocket')) {
     return 'surge'
+  }
+
+  if (ua.includes('surfboard')) {
+    return 'surfboard'
+  }
+
+  if (ua.includes('loon')) {
+    return 'loon'
+  }
+
+  if (ua.includes('quantumult')) {
+    return 'quanx'
   }
 
   return null
