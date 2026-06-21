@@ -7,7 +7,8 @@
 ## 特性
 
 - **多格式摄入**：URI 列表、Base64 订阅、Clash YAML（含 `proxies` / `proxy-groups`）
-- **多协议解析**：VLESS（含 Reality）、Shadowsocks（SIP002）、Trojan、VMess
+- **多协议解析**：VLESS（含 Reality）、Shadowsocks（SIP002）、Trojan、VMess、**Hysteria2**
+- **多格式输出**：Sing-box JSON、Clash YAML、Surge、**Surfboard**（INI + MANAGED-CONFIG）、**Loon**、**Quantumult X**
 - **智能路由**：根据 `User-Agent` 识别客户端，或通过 `target` 强制指定输出格式
 - **上游透传**：转发客户端请求头拉取订阅；无法识别客户端时原样返回上游内容
 - **兜底重试**：解析失败时自动用浏览器 UA 重试一次
@@ -49,7 +50,7 @@ GET /api/templates/clash/default
 GET /api/templates/singbox
 PUT /api/templates/singbox
 GET /api/templates/singbox/default
-GET /sub?url=<订阅链接>&target=<singbox|clash|surge>
+GET /sub?url=<订阅链接>&target=<singbox|clash|surge|surfboard|loon|quanx>
 ```
 
 ### 参数
@@ -57,7 +58,7 @@ GET /sub?url=<订阅链接>&target=<singbox|clash|surge>
 | 参数 | 必填 | 说明 |
 |------|------|------|
 | `url` | 是 | 上游订阅链接（http/https） |
-| `target` | 否 | 强制输出格式：`singbox` / `clash` / `surge` |
+| `target` | 否 | 强制输出格式：`singbox` / `clash` / `surge` / `surfboard` / `loon` / `quanx` |
 | `ua` | 否 | `target` 的别名，向后兼容 |
 
 ### Web Admin
@@ -140,7 +141,7 @@ proxy-groups:
 | 情况 | 行为 |
 |------|------|
 | 指定 `target` | 按目标格式转换 |
-| UA 可识别（Clash / Sing-box / Surge 等） | 自动匹配对应格式 |
+| UA 可识别（Clash / Sing-box / Surge / Surfboard / Loon / Quantumult X 等） | 自动匹配对应格式 |
 | UA 无法识别（浏览器、curl 等） | 原样返回上游订阅内容 |
 
 ### 示例
@@ -159,13 +160,25 @@ GET /sub?url=https%3A%2F%2Fexample.com%2Fsub
 ## 项目结构
 
 ```text
-src/                          # 核心后端
-├── core/                     # 业务逻辑（摄入、解析、路由、转换）
-├── formatters/               # Sing-box JSON / Clash YAML 输出
+src/
+├── core/
+│   ├── parsers/              # 协议解析器（VLESS / VMess / SS / Trojan / Hysteria2）
+│   ├── client.ts             # UA 嗅探与客户端类型解析
+│   ├── convert.ts            # 主转换流程
+│   ├── format.ts             # 格式分发入口
+│   ├── ingest.ts             # 上游订阅拉取
+│   └── parse.ts              # 订阅格式识别与节点解析
+├── formatters/
+│   ├── clash.ts              # Clash / Surge YAML
+│   ├── singbox.ts            # Sing-box JSON
+│   ├── surfboard.ts          # Surfboard INI（含 MANAGED-CONFIG）
+│   ├── loon.ts               # Loon INI
+│   └── quanx.ts              # Quantumult X INI
 ├── adapters/                 # HTTP handler、standalone、lambda
 ├── profiles/                 # 规则集 & 模板存储与合并逻辑
 │   ├── template-clash.yaml   # 内置 Clash 默认模板（可直接编辑）
 │   └── template-singbox.json # 内置 Sing-box 默认模板（可直接编辑）
+└── types/                    # TypeScript 类型定义
 data/rules.yaml               # Clash 规则集（单文件）
 ```
 
