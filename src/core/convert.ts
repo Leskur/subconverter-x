@@ -5,6 +5,7 @@ import { ingestSubscription, type IngestOptions } from './ingest.js'
 import { parseProxyLines, parseSubscription } from './parse.js'
 import { resolveClient } from './client.js'
 import { resolveClashExtras } from '../profiles/merge.js'
+import { expandRulesetRefs } from '../profiles/ruleset.js'
 import { rulesStore } from '../profiles/store.js'
 import { templateStore } from '../profiles/templates.js'
 
@@ -127,7 +128,7 @@ export async function convertSubscription(
 
   let clashExtras
   let proxyGroupsSource: 'upstream' | 'template' | undefined
-  if (client === 'clash' || client === 'surge') {
+  if (client === 'clash' || client === 'surge' || client === 'surfboard') {
     const rulesConfig = await rulesStore.get()
     let resolvedTopLevel = topLevel
     let resolvedProxyGroups = proxyGroups
@@ -142,6 +143,9 @@ export async function convertSubscription(
       }
     } else {
       proxyGroupsSource = 'upstream'
+    }
+    if (rulesConfig?.rules) {
+      rulesConfig.rules = await expandRulesetRefs(rulesConfig.rules)
     }
     clashExtras = resolveClashExtras(rulesConfig, { proxyGroups: resolvedProxyGroups, rules, topLevel: resolvedTopLevel })
   }
