@@ -6,7 +6,7 @@ import type {
   VlessProxy,
   VmessProxy,
 } from '../types/proxy.js'
-import type { ClashExtras } from '../profiles/merge.js'
+import type { ClashExtras } from '../rules/merge.js'
 
 function ssLine(node: ShadowsocksProxy): string {
   const parts = [

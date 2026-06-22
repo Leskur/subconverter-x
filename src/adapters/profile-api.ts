@@ -1,6 +1,6 @@
-import type { RulesInput } from '../profiles/types.js'
-import { rulesStore } from '../profiles/store.js'
-import { rulesetsStore, type CustomRuleset } from '../profiles/rulesets-store.js'
+import type { RulesInput } from '../rules/types.js'
+import { rulesStore } from '../rules/store.js'
+import { rulesetsStore, type CustomRuleset } from '../rules/rulesets-store.js'
 import { getAppVersion } from '../utils/version.js'
 
 function corsOrigin(): string {
@@ -46,7 +46,22 @@ export async function handleAdminMeta(): Promise<Response> {
   })
 }
 
-export async function handleRulesApi(request: Request): Promise<Response> {
+export async function handleRulesApi(request: Request, pathname: string): Promise<Response> {
+  if (request.method === 'GET' && pathname === '/api/rules/default') {
+    const rules = await rulesStore.getDefault()
+    if (!rules) return jsonResponse({ error: 'Default rules not found' }, 404)
+    return jsonResponse(rules)
+  }
+
+  if (request.method === 'POST' && pathname === '/api/rules/reset') {
+    if (!isAuthorized(request)) {
+      return jsonResponse({ error: 'Unauthorized' }, 401)
+    }
+    const rules = await rulesStore.reset()
+    if (!rules) return jsonResponse({ error: 'Default rules not found' }, 404)
+    return jsonResponse(rules)
+  }
+
   if (request.method === 'GET') {
     const rules = await rulesStore.get()
     if (!rules) return jsonResponse({ error: 'Rules not found' }, 404)

@@ -91,8 +91,8 @@ export async function handleRequest(request: Request): Promise<Response> {
     return handleAdminMeta()
   }
 
-  if (url.pathname === '/api/rules') {
-    return handleRulesApi(request)
+  if (url.pathname === '/api/rules' || url.pathname === '/api/rules/default' || url.pathname === '/api/rules/reset') {
+    return handleRulesApi(request, url.pathname)
   }
 
   if (url.pathname === '/api/rulesets') {

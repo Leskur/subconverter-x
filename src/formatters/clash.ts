@@ -1,5 +1,5 @@
 import { stringify } from 'yaml'
-import type { ClashExtras } from '../profiles/merge.js'
+import type { ClashExtras } from '../rules/merge.js'
 import type { Hysteria2Proxy, ProxyNode, RawProxy, ShadowsocksProxy, TrojanProxy, VlessProxy, VmessProxy } from '../types/proxy.js'
 
 function vlessProxy(node: VlessProxy): Record<string, unknown> {

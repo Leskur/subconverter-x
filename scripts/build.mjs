@@ -26,10 +26,10 @@ await esbuild.build({
   outfile: 'dist/lambda.cjs',
 })
 
-await cp('data', 'dist/data', { recursive: true }).catch(() => {})
-await mkdir('dist/profiles', { recursive: true })
-await copyFile('src/profiles/template-clash.yaml', 'dist/profiles/template-clash.yaml')
-await copyFile('src/profiles/template-singbox.json', 'dist/profiles/template-singbox.json')
+await cp('src/rules/default-rules.yaml', 'dist/default-rules.yaml').catch(() => {})
+await mkdir('dist/templates', { recursive: true })
+await copyFile('src/templates/template-clash.yaml', 'dist/templates/template-clash.yaml')
+await copyFile('src/templates/template-singbox.json', 'dist/templates/template-singbox.json')
 
 console.log('Build complete: dist/standalone.cjs, dist/lambda.cjs')
 
@@ -43,7 +43,7 @@ const binaryName = isWindows ? 'dist/subconverter-x.exe' : 'dist/subconverter-x'
 // 1. 生成 blob
 const nodeVer = parseInt(process.versions.node.split('.')[0])
 const seaFlag = nodeVer >= 22 ? '--experimental-sea-config' : '--build-sea'
-execSync(`node ${seaFlag} sea-config.json`, { stdio: 'inherit' })
+execSync(`node ${seaFlag} scripts/sea-config.json`, { stdio: 'inherit' })
 
 // 2. 复制 node 可执行文件
 await copyFile(process.execPath, binaryName)

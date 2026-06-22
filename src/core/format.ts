@@ -5,7 +5,7 @@ import { formatLoonProxies } from '../formatters/loon.js'
 import { formatQuanxProxies } from '../formatters/quanx.js'
 import { formatSurfboardProxies } from '../formatters/surfboard.js'
 
-import type { ClashExtras } from '../profiles/merge.js'
+import type { ClashExtras } from '../rules/merge.js'
 
 export function formatProxies(
   nodes: ProxyNode[],

@@ -4,10 +4,10 @@ import { formatProxies } from './format.js'
 import { ingestSubscription, type IngestOptions } from './ingest.js'
 import { parseSubscription } from './parse.js'
 import { resolveClient } from './client.js'
-import { resolveClashExtras } from '../profiles/merge.js'
-import { expandRulesetRefs } from '../profiles/ruleset.js'
-import { rulesStore } from '../profiles/store.js'
-import { templateStore } from '../profiles/templates.js'
+import { resolveClashExtras } from '../rules/merge.js'
+import { expandRulesetRefs } from '../rules/ruleset.js'
+import { rulesStore } from '../rules/store.js'
+import { templateStore } from '../templates/templates.js'
 
 const CLASH_SKIP_KEYS = new Set(['proxies', 'proxy-groups', 'rules'])
 

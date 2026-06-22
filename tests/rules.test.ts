@@ -6,8 +6,8 @@ import {
   mergeRules,
   normalizeMergedRules,
   resolveClashExtras,
-} from '../src/profiles/merge.js'
-import { FileRulesStore } from '../src/profiles/store.js'
+} from '../src/rules/merge.js'
+import { FileRulesStore } from '../src/rules/store.js'
 
 describe('mergeRules', () => {
   const custom = ['GEOIP,CN,DIRECT', 'MATCH,PROXY']

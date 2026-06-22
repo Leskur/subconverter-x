@@ -6,7 +6,7 @@ import type {
   VlessProxy,
   VmessProxy,
 } from '../types/proxy.js'
-import type { ClashExtras } from '../profiles/merge.js'
+import type { ClashExtras } from '../rules/merge.js'
 
 function ssLine(node: ShadowsocksProxy): string {
   return `shadowsocks=${node.server}:${node.port}, method=${node.method}, password=${node.password}, udp-relay=true, tag=${node.name}`
