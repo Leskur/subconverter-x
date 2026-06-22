@@ -59,7 +59,7 @@ async function handleSub(request: Request, started: number): Promise<Response> {
   try {
     const result = await convertSubscription({ upstreamUrl, requestHeaders: request.headers, forceClient: client, managedConfigUrl: request.url })
     const response = textResponse(result.body, result.contentType, 200)
-    logRequest('response', { status: 200, client: result.client, format: result.format, groups: result.proxyGroupsSource, nodeCount: result.nodeCount, groupCount: result.proxyGroupCount, ruleCount: result.ruleCount, size: result.body.length, latency: `${Date.now() - started}ms`, url: upstreamUrl, body: result.body })
+    logRequest('response', { status: 200, client: result.client, format: result.format, groups: result.proxyGroupsSource, nodeCount: result.nodeCount, groupCount: result.proxyGroupCount, ruleCount: result.ruleCount, size: result.body.length, latency: `${Date.now() - started}ms`, url: upstreamUrl })
     return response
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Conversion failed'

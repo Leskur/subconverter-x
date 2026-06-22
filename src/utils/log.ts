@@ -1,12 +1,9 @@
-import { writeFileSync } from 'node:fs'
-
 function timestamp(): string {
   return new Date().toLocaleString('sv').replace(' ', 'T')
 }
 
 export function logRequest(message: string, fields: Record<string, unknown> = {}): void {
-  const { body, ...rest } = fields
-  const parts = Object.entries(rest)
+  const parts = Object.entries(fields)
     .filter(([, value]) => value !== undefined && value !== '')
     .map(([key, value]) => `${key}=${String(value)}`)
 
@@ -14,11 +11,5 @@ export function logRequest(message: string, fields: Record<string, unknown> = {}
     console.log(`[${timestamp()}] ${message}`)
   } else {
     console.log(`[${timestamp()}] ${message} ${parts.join(' ')}`)
-  }
-
-  if (body !== undefined && process.env.LOG_BODY === '1') {
-    const file = process.env.LOG_BODY_FILE ?? 'sub-body.txt'
-    writeFileSync(file, String(body), 'utf8')
-    console.log(`[body written to ${file}]`)
   }
 }

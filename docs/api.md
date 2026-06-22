@@ -268,5 +268,3 @@ Authorization: Bearer <ADMIN_TOKEN>
 | `PORT` | `15500` | 服务监听端口 |
 | `CORS_ORIGIN` | `*` | CORS 允许来源 |
 | `ADMIN_TOKEN` | （无） | 管理接口认证 token，设置后 PUT 请求需携带 |
-| `LOG_BODY` | `0` | 设为 `1` 时将上游原始响应写入文件 |
-| `LOG_BODY_FILE` | `sub-body.txt` | `LOG_BODY=1` 时的输出文件路径 |
