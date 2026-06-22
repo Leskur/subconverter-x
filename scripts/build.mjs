@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import { cp, mkdir, copyFile, chmod } from 'node:fs/promises'
+import { mkdir, copyFile, chmod } from 'node:fs/promises'
 import { execSync } from 'node:child_process'
 import { platform } from 'node:process'
 
@@ -25,11 +25,6 @@ await esbuild.build({
   entryPoints: ['src/adapters/lambda.ts'],
   outfile: 'dist/lambda.cjs',
 })
-
-await cp('src/rules/default-rules.yaml', 'dist/default-rules.yaml').catch(() => {})
-await mkdir('dist/templates', { recursive: true })
-await copyFile('src/templates/template-clash.yaml', 'dist/templates/template-clash.yaml')
-await copyFile('src/templates/template-singbox.json', 'dist/templates/template-singbox.json')
 
 console.log('Build complete: dist/standalone.cjs, dist/lambda.cjs')
 

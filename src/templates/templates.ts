@@ -1,7 +1,5 @@
-import { readFileSync } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
 import { appDataDir } from '../utils/paths.js'
 
 export type TemplateType = 'clash' | 'singbox'
@@ -10,9 +8,58 @@ function templateFilePath(type: TemplateType): string {
   return join(appDataDir(), `template-${type}.${type === 'singbox' ? 'json' : 'yaml'}`)
 }
 
-const _dir = dirname(fileURLToPath(import.meta.url))
-export const DEFAULT_CLASH_TEMPLATE = readFileSync(join(_dir, 'template-clash.yaml'), 'utf8')
-export const DEFAULT_SINGBOX_TEMPLATE = readFileSync(join(_dir, 'template-singbox.json'), 'utf8')
+const DEFAULT_CLASH_TEMPLATE = `mixed-port: 7890
+mode: rule
+external-controller: 127.0.0.1:9090
+dns:
+  enable: true
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+proxy-groups:
+  - name: PROXY
+    type: select
+    proxies: []
+  - name: AUTO
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+    interval: 300
+    proxies: []
+`
+
+const DEFAULT_SINGBOX_TEMPLATE = `{
+  "log": { "level": "info", "timestamp": true },
+  "dns": {
+    "servers": [
+      { "tag": "remote", "address": "tls://1.1.1.1", "detour": "PROXY" },
+      { "tag": "local", "address": "223.5.5.5", "detour": "DIRECT" }
+    ],
+    "rules": [{ "geosite": "cn", "server": "local" }],
+    "final": "remote"
+  },
+  "inbounds": [
+    { "type": "mixed", "listen": "127.0.0.1", "listen_port": 7890 }
+  ],
+  "outbounds": [],
+  "route": {
+    "rules": [
+      { "geosite": "cn", "outbound": "DIRECT" },
+      { "geoip": "cn", "outbound": "DIRECT" }
+    ],
+    "final": "PROXY",
+    "auto_detect_interface": true
+  },
+  "experimental": {
+    "cache_file": { "enabled": true },
+    "clash_api": { "external_controller": "127.0.0.1:9090" }
+  }
+}
+`
 
 export interface TemplateStore {
   get(type: TemplateType): Promise<string>
