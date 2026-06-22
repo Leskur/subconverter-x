@@ -50,7 +50,7 @@ rules:
 
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
-| `PORT` | `3000` | 监听端口 |
+| `PORT` | `15500` | 监听端口 |
 | `ADMIN_TOKEN` | 未设置 | 设置后 PUT 接口需 `Authorization: Bearer <token>` |
 | `CORS_ORIGIN` | `*` | Admin 分离部署时的 CORS 来源 |
 
