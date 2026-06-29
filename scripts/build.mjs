@@ -10,7 +10,7 @@ await mkdir('dist', { recursive: true })
 const shared = {
   bundle: true,
   platform: 'node',
-  target: 'node20',
+  target: 'node24',
   format: 'cjs',
   sourcemap: true,
   external: [],

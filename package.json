@@ -4,7 +4,7 @@
   "description": "轻量订阅解析与转换引擎，支持单文件部署",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "bin": {
     "subconverter-x": "./dist/main.cjs"
