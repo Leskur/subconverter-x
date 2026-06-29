@@ -7,6 +7,7 @@ import { resolveClient } from './client.js'
 import { resolveClashExtras } from '../rules/merge.js'
 import { expandRulesetRefs } from '../rules/ruleset.js'
 import { rulesStore } from '../rules/store.js'
+import { subscriptionStore } from '../subscription/store.js'
 import { templateStore } from './templates.js'
 
 const CLASH_SKIP_KEYS = new Set(['proxies', 'proxy-groups', 'rules'])
@@ -159,7 +160,10 @@ export async function convertSubscription(
     clashExtras = resolveClashExtras(rulesConfig, { proxyGroups: resolvedProxyGroups, rules, topLevel: resolvedTopLevel })
   }
 
-  const formatted = formatProxies(nodes, client, clashExtras, input.managedConfigUrl)
+  const subConfig = await subscriptionStore.get()
+  const updateInterval = subConfig.updateInterval
+
+  const formatted = formatProxies(nodes, client, clashExtras, input.managedConfigUrl, updateInterval)
   const proxyGroupCount = clashExtras?.proxyGroups?.length
   const ruleCount = clashExtras?.rules?.length
 

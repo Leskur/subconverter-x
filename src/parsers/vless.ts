@@ -1,5 +1,5 @@
-import type { VlessProxy } from '../types.js'
-import { decodeName, parseQuery } from '../../utils/uri.js'
+import type { VlessProxy } from '../core/types.js'
+import { decodeName, parseQuery } from '../utils/uri.js'
 
 export function parseVlessLine(line: string): VlessProxy | null {
   if (!line.startsWith('vless://')) return null

@@ -1,5 +1,5 @@
 import { parse as parseYaml } from 'yaml'
-import type { ProxyNode } from '../types.js'
+import type { ProxyNode } from '../core/types.js'
 
 interface ClashProxy {
   name?: string

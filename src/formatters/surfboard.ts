@@ -7,6 +7,7 @@ import type {
   VmessProxy,
 } from '../core/types.js'
 import type { ClashExtras } from '../rules/merge.js'
+import type { UpdateIntervalMode } from '../subscription/types.js'
 
 function ssLine(node: ShadowsocksProxy): string {
   const parts = [
@@ -96,12 +97,13 @@ function proxyLine(node: ProxyNode): string {
   }
 }
 
-export function formatSurfboardProxies(nodes: ProxyNode[], managedConfigUrl?: string, extras?: ClashExtras): string {
+export function formatSurfboardProxies(nodes: ProxyNode[], managedConfigUrl?: string, extras?: ClashExtras, updateInterval?: UpdateIntervalMode): string {
   const usable = nodes.filter((n) => n.type !== 'raw')
   const lines = usable.map(proxyLine)
   const names = usable.map((n) => n.name)
+  const intervalValue = updateInterval && updateInterval !== 'auto' ? updateInterval : 43200
   const header = managedConfigUrl
-    ? [`#!MANAGED-CONFIG ${managedConfigUrl} interval=43200 strict=false`, '']
+    ? [`#!MANAGED-CONFIG ${managedConfigUrl} interval=${intervalValue} strict=false`, '']
     : []
 
   const ruleLines = extras?.rules?.length

@@ -1,5 +1,5 @@
-import type { ShadowsocksProxy } from '../types.js'
-import { decodeBase64Loose, decodeName, parseQuery } from '../../utils/uri.js'
+import type { ShadowsocksProxy } from '../core/types.js'
+import { decodeBase64Loose, decodeName, parseQuery } from '../utils/uri.js'
 
 function parsePlugin(pluginValue: string): { plugin?: string; pluginOpts?: string } {
   const semicolon = pluginValue.indexOf(';')

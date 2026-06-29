@@ -1,11 +1,11 @@
 import type { ProxyNode } from './types.js'
 import { tryDecodeBase64 } from '../utils/uri.js'
-import { parseClashConfig } from './parsers/clash.js'
-import { parseShadowsocksLine } from './parsers/shadowsocks.js'
-import { parseTrojanLine } from './parsers/trojan.js'
-import { parseVlessLine } from './parsers/vless.js'
-import { parseVmessLine } from './parsers/vmess.js'
-import { parseHysteria2Line } from './parsers/hysteria2.js'
+import { parseClashConfig } from '../parsers/clash.js'
+import { parseShadowsocksLine } from '../parsers/shadowsocks.js'
+import { parseTrojanLine } from '../parsers/trojan.js'
+import { parseVlessLine } from '../parsers/vless.js'
+import { parseVmessLine } from '../parsers/vmess.js'
+import { parseHysteria2Line } from '../parsers/hysteria2.js'
 
 const PARSERS: Array<(line: string) => ProxyNode | null> = [
   parseVlessLine,

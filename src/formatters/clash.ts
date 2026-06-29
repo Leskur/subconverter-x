@@ -1,5 +1,6 @@
 import { stringify } from 'yaml'
 import type { ClashExtras } from '../rules/merge.js'
+import type { UpdateIntervalMode } from '../subscription/types.js'
 import type { Hysteria2Proxy, ProxyNode, RawProxy, ShadowsocksProxy, TrojanProxy, VlessProxy, VmessProxy } from '../core/types.js'
 
 function vlessProxy(node: VlessProxy): Record<string, unknown> {
@@ -118,7 +119,7 @@ function trojanProxy(node: TrojanProxy): Record<string, unknown> {
   return proxy
 }
 
-export function formatClashProxies(nodes: ProxyNode[], extras?: ClashExtras): string {
+export function formatClashProxies(nodes: ProxyNode[], extras?: ClashExtras, updateInterval?: UpdateIntervalMode): string {
   const proxies = nodes.map((node) => {
     switch (node.type) {
       case 'vless':
@@ -170,6 +171,10 @@ export function formatClashProxies(nodes: ProxyNode[], extras?: ClashExtras): st
     ...(extras?.topLevel ?? {}),
     proxies,
     'proxy-groups': groups,
+  }
+  if (updateInterval) {
+    const intervalValue = updateInterval === 'auto' ? 43200 : updateInterval
+    output['profile'] = { ...(output['profile'] as Record<string, unknown> ?? {}), 'auto-update-interval': intervalValue }
   }
   if (extras?.rules && extras.rules.length > 0) {
     output.rules = extras.rules
