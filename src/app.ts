@@ -17,10 +17,11 @@ function requestLogger() {
     const started = Date.now()
     const method = c.req.method
     const path = new URL(c.req.url).pathname
-    const ua = c.req.header('user-agent') ?? undefined
-    logRequest('request', { method, path, ua })
+    const reqHeaders = Object.fromEntries(c.req.raw.headers)
+    logRequest('request', { method, path, headers: JSON.stringify(reqHeaders) })
     await next()
-    logRequest('response', { path, status: c.res.status, latency: `${Date.now() - started}ms` })
+    const resHeaders = Object.fromEntries(c.res.headers.entries())
+    logRequest('response', { path, status: c.res.status, headers: JSON.stringify(resHeaders), latency: `${Date.now() - started}ms` })
   })
 }
 
