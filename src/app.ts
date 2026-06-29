@@ -1,8 +1,23 @@
-import { convertSubscription, fetchRawSubscription } from '../core/convert.js'
-import { resolveClientOrNull } from '../core/client.js'
-import { corsHeadersForHandler, handleAdminMeta, handleRulesApi, handleRulesetsApi } from './profile-api.js'
-import { logRequest } from '../utils/log.js'
-import { VERSION } from '../version.js'
+import { convertSubscription, fetchRawSubscription } from './core/convert.js'
+import { resolveClientOrNull } from './core/client.js'
+import { handleAdminMeta } from './routes/admin.js'
+import { handleRulesApi } from './routes/rules.js'
+import { handleRulesetsApi } from './routes/rulesets.js'
+import { getDocsHtml } from './docs/openapi.js'
+import { logRequest } from './utils/log.js'
+import { VERSION } from './version.js'
+
+function corsOrigin(): string {
+  return process.env.CORS_ORIGIN ?? '*'
+}
+
+export function corsHeadersForHandler(): Record<string, string> {
+  return {
+    'Access-Control-Allow-Origin': corsOrigin(),
+    'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  }
+}
 
 const JSON_HEADERS = corsHeadersForHandler()
 
@@ -113,6 +128,14 @@ export async function handleRequest(request: Request): Promise<Response> {
       return jsonResponse({ error: 'Method Not Allowed' }, 405)
     }
     return handleSub(request, started)
+  }
+
+  if (url.pathname === '/docs' || url.pathname === '/docs/') {
+    const origin = url.origin
+    return new Response(getDocsHtml(origin), {
+      status: 200,
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    })
   }
 
   logRequest('request', { method: request.method, path: url.pathname, ua: userAgent })

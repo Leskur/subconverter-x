@@ -11,9 +11,7 @@
   },
   "scripts": {
     "dev": "tsx watch src/adapters/standalone.ts serve --port 15500",
-    "build": "tsc --noEmit && node scripts/build.mjs",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "build": "tsc --noEmit && node scripts/build.mjs"
   },
   "keywords": [
     "subscription",
@@ -28,8 +26,7 @@
     "esbuild": "^0.25.5",
     "postject": "^1.0.0-alpha.6",
     "tsx": "^4.19.4",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.1"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "yaml": "^2.8.0"

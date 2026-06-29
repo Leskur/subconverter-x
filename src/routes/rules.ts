@@ -1,7 +1,5 @@
 import type { RulesInput } from '../rules/types.js'
 import { rulesStore } from '../rules/store.js'
-import { rulesetsStore, type CustomRuleset } from '../rules/rulesets-store.js'
-import { getAppVersion } from '../utils/version.js'
 
 function corsOrigin(): string {
   return process.env.CORS_ORIGIN ?? '*'
@@ -25,25 +23,12 @@ function jsonResponse(body: unknown, status = 200): Response {
   })
 }
 
-function isAuthEnabled(): boolean {
-  return !!process.env.ADMIN_TOKEN
-}
-
 function isAuthorized(request: Request): boolean {
   const token = process.env.ADMIN_TOKEN
   if (!token) return true
 
   const header = request.headers.get('authorization')
   return header === `Bearer ${token}`
-}
-
-export async function handleAdminMeta(): Promise<Response> {
-  const version = await getAppVersion()
-  return jsonResponse({
-    service: 'subconverter-x',
-    version,
-    authEnabled: isAuthEnabled(),
-  })
 }
 
 export async function handleRulesApi(request: Request, pathname: string): Promise<Response> {
@@ -85,32 +70,4 @@ export async function handleRulesApi(request: Request, pathname: string): Promis
   }
 
   return jsonResponse({ error: 'Method Not Allowed' }, 405)
-}
-
-export async function handleRulesetsApi(request: Request): Promise<Response> {
-  if (request.method === 'GET') {
-    const rulesets = await rulesetsStore.getAll()
-    return jsonResponse(rulesets)
-  }
-
-  if (request.method === 'PUT') {
-    if (!isAuthorized(request)) {
-      return jsonResponse({ error: 'Unauthorized' }, 401)
-    }
-    let body: CustomRuleset[]
-    try {
-      body = (await request.json()) as CustomRuleset[]
-      if (!Array.isArray(body)) throw new Error('Expected array')
-    } catch {
-      return jsonResponse({ error: 'Invalid JSON body' }, 400)
-    }
-    const saved = await rulesetsStore.save(body)
-    return jsonResponse(saved)
-  }
-
-  return jsonResponse({ error: 'Method Not Allowed' }, 405)
-}
-
-export function corsHeadersForHandler(): Record<string, string> {
-  return corsHeaders()
 }

@@ -1,4 +1,4 @@
-import { handleRequest } from './handler.js'
+import { handleRequest } from '../app.js'
 
 export interface LambdaEvent {
   rawPath?: string

@@ -1,6 +1,6 @@
 import { createServer } from 'node:http'
 import { networkInterfaces } from 'node:os'
-import { handleRequest } from './handler.js'
+import { handleRequest } from '../app.js'
 
 function listLanAddresses(): string[] {
   const addresses: string[] = []
