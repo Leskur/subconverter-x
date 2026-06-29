@@ -13,18 +13,36 @@ npm install
 npm run dev      # 监听 :15500
 ```
 
-生产：`npm run build && node dist/standalone.cjs serve`
+生产：`npm run build && node dist/main.cjs`
+
+## 一键安装（Linux）
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Leskur/subconverter-x/main/install.sh | bash
+```
+
+卸载：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Leskur/subconverter-x/main/uninstall.sh | bash
+```
 
 ## API
 
 ```
 GET  /sub?url=<订阅链接>&target=<格式>
+GET  /health
 GET  /version
+GET  /api/admin/meta
 GET  /api/rules
 PUT  /api/rules
 GET  /api/rules/default
 POST /api/rules/reset
+GET  /api/rulesets
+PUT  /api/rulesets
 ```
+
+交互式 API 文档：`/docs`
 
 **`target`** 可选值：`singbox` · `clash` · `surge` · `surfboard` · `loon` · `quanx`
 不传则根据请求 `User-Agent` 自动识别；无法识别时原样透传上游内容。
@@ -51,33 +69,25 @@ rules:
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
 | `PORT` | `15500` | 监听端口 |
-| `ADMIN_TOKEN` | 未设置 | 设置后 PUT 接口需 `Authorization: Bearer <token>` |
-| `CORS_ORIGIN` | `*` | Admin 分离部署时的 CORS 来源 |
+| `CORS_ORIGIN` | `*` | 分离部署时的 CORS 来源 |
 
 ## 项目结构
 
 ```
 src/
+├── app.ts          # Hono 应用 + 路由组合
+├── main.ts         # 启动入口
 ├── core/           # 摄入、解析、转换、格式分发
-│   └── parsers/    # 协议解析器（VLESS/VMess/SS/Trojan/Hysteria2）
+│   ├── parsers/    # 协议解析器（VLESS/VMess/SS/Trojan/Hysteria2）
+│   ├── types.ts    # 核心类型定义
+│   └── templates.ts # 输出模板存储
 ├── formatters/     # Clash · Sing-box · Surfboard · Loon · QuanX
-├── adapters/       # HTTP handler、standalone、lambda
+├── routes/         # HTTP 路由 + OpenAPI 文档
 ├── rules/          # 规则存储与合并
-└── templates/      # 输出模板存储
+└── utils/          # 工具函数
 scripts/
 ├── build.mjs       # esbuild 打包 + SEA 单文件构建
-├── install.sh      # systemd 用户服务安装
-├── uninstall.sh    # 卸载
 └── sea-config.json # SEA 打包配置
-```
-
-## 部署
-
-### 服务器部署
-
-```bash
-npm run build
-bash scripts/install.sh    # 安装到 ~/.local/bin 并注册 systemd 服务
 ```
 
 ## License
