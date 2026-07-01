@@ -18,13 +18,13 @@ npm run dev      # 监听 :15500
 ## 一键安装（Linux）
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Leskur/subconverter-x/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Leskur/subconverter-x-server/main/install.sh | bash
 ```
 
 卸载：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Leskur/subconverter-x/main/uninstall.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Leskur/subconverter-x-server/main/uninstall.sh | bash
 ```
 
 ## API

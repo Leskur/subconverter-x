@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-REPO="Leskur/subconverter-x"
+REPO="Leskur/subconverter-x-server"
 SERVICE="subconverter-x"
 BIN="$HOME/.local/bin/subconverter-x"
 UNIT="$HOME/.config/systemd/user/$SERVICE.service"
