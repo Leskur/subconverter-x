@@ -13,7 +13,8 @@ export function normalizeMergedRules(rules: string[]): string[] {
 
   for (const rule of rules) {
     const trimmed = rule.trim()
-    if (!trimmed || seen.has(trimmed)) continue
+    if (!trimmed || trimmed.startsWith('#')) continue
+    if (seen.has(trimmed)) continue
     seen.add(trimmed)
     if (/^MATCH,/i.test(trimmed)) {
       match.push(trimmed)

@@ -11,16 +11,6 @@ function templateFilePath(type: TemplateType): string {
 const DEFAULT_CLASH_TEMPLATE = `mixed-port: 7890
 mode: rule
 external-controller: 127.0.0.1:9090
-dns:
-  enable: true
-  default-nameserver:
-    - 223.5.5.5
-    - 119.29.29.29
-  enhanced-mode: fake-ip
-  fake-ip-range: 198.18.0.1/16
-  nameserver:
-    - 223.5.5.5
-    - 119.29.29.29
 proxy-groups:
   - name: PROXY
     type: select
@@ -34,14 +24,6 @@ proxy-groups:
 
 const DEFAULT_SINGBOX_TEMPLATE = `{
   "log": { "level": "info", "timestamp": true },
-  "dns": {
-    "servers": [
-      { "tag": "remote", "address": "tls://1.1.1.1", "detour": "PROXY" },
-      { "tag": "local", "address": "223.5.5.5", "detour": "DIRECT" }
-    ],
-    "rules": [{ "geosite": "cn", "server": "local" }],
-    "final": "remote"
-  },
   "inbounds": [
     { "type": "mixed", "listen": "127.0.0.1", "listen_port": 7890 }
   ],

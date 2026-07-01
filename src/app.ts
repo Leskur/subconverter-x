@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { createMiddleware } from 'hono/factory'
 import { logRequest } from './utils/log.js'
+import { authMiddleware } from './middleware/auth.js'
 import adminRoutes from './routes/admin.js'
 import rulesRoutes from './routes/rules.js'
 import rulesetsRoutes from './routes/rulesets.js'
@@ -38,6 +39,15 @@ app.use(
 )
 
 app.use('*', requestLogger())
+
+// Auth for mutating routes
+function requireAuth(c: Parameters<Parameters<typeof app.use>[1]>[0], next: () => Promise<void>) {
+  if (c.req.method === 'PUT' || c.req.method === 'POST') return authMiddleware(c, next)
+  return next()
+}
+app.use('/api/rules', requireAuth)
+app.use('/api/rulesets', requireAuth)
+app.use('/api/subscription', requireAuth)
 
 app.route('/', systemRoutes)
 app.route('/api/admin', adminRoutes)
