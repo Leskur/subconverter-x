@@ -29,6 +29,9 @@ const DEFAULT_SINGBOX_TEMPLATE = `{
   "outbounds": [],
   "route": {
     "final": "PROXY"
+  },
+  "experimental": {
+    "clash_api": { "external_controller": "127.0.0.1:9090" }
   }
 }
 `
