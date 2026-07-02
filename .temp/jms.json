@@ -1,0 +1,279 @@
+{
+  "dns": {
+    "servers": [
+      { "type": "local", "tag": "local" },
+      {
+        "type": "fakeip",
+        "tag": "fakeip",
+        "inet4_range": "198.18.0.0/16",
+        "inet6_range": "fc00::/64"
+      },
+      {
+        "type": "udp",
+        "tag": "remote",
+        "server": "1.1.1.1",
+        "detour": "PROXY"
+      },
+      {
+        "type": "https",
+        "tag": "remote-doh",
+        "domain_resolver": "cn-doh",
+        "server": "cloudflare-dns.com",
+        "detour": "PROXY"
+      },
+      {
+        "type": "https",
+        "tag": "remote-doh1",
+        "domain_resolver": "cn-doh",
+        "server": "dns.cloudflare.com",
+        "detour": "PROXY"
+      },
+      { "type": "udp", "tag": "cn", "server": "223.5.5.5" },
+      { "type": "https", "tag": "cn-doh", "server": "223.5.5.5" }
+    ],
+    "rules": [
+      {
+        "query_type": ["A", "AAAA"],
+        "server": "fakeip",
+        "domain": [
+          "cloud.oracle.com",
+          "steambroadcast.akamaized.net",
+          "steamcommunity-a.akamaihd.net",
+          "steamstore-a.akamaihd.net",
+          "steamusercontent-a.akamaihd.net",
+          "steamuserimages-a.akamaihd.net",
+          "steampipe.akamaized.net"
+        ],
+        "domain_suffix": [
+          "google.com",
+          "github.com",
+          "openai.com",
+          "linkedin.com",
+          "reddit.com",
+          "twitter.com",
+          "facebook.com",
+          "instagram.com",
+          "whatsapp.net"
+        ]
+      },
+      {
+        "domain_suffix": ["cn", "ddns.leskur.cn", "needvpn.work"],
+        "server": "cn"
+      }
+    ],
+    "final": "cn"
+  },
+  "inbounds": [
+    {
+      "tag": "tun-in",
+      "type": "tun",
+      "address": ["172.19.0.1/30", "2001:0470:f9da:fdfa::1/64"],
+      "auto_route": true,
+      "mtu": 1500,
+      "stack": "system",
+      "strict_route": true,
+      "route_exclude_address": ["192.168.0.0/16", "fc00::/7"]
+    },
+    {
+      "tag": "mixed-in",
+      "type": "mixed",
+      "listen": "127.0.0.1",
+      "listen_port": 7891,
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "DIRECT",
+      "type": "direct",
+      "domain_resolver": { "server": "local" }
+    },
+    { "tag": "REJECT", "type": "block" },
+    {
+      "type": "shadowsocks",
+      "tag": "JMS-621627@c85s1.portablesubmarines.com:15236",
+      "server": "176.122.168.76",
+      "server_port": 15236,
+      "method": "aes-256-gcm",
+      "password": "AqjPjxkdLywUTdGB"
+    },
+    {
+      "type": "shadowsocks",
+      "tag": "JMS-621627@c85s2.portablesubmarines.com:15236",
+      "server": "66.112.222.216",
+      "server_port": 15236,
+      "method": "aes-256-gcm",
+      "password": "AqjPjxkdLywUTdGB"
+    },
+    {
+      "type": "vmess",
+      "tag": "JMS-621627@c85s3.portablesubmarines.com:15236",
+      "server": "144.168.58.155",
+      "server_port": 15236,
+      "uuid": "deaf6bc0-4beb-4f1c-8f84-8c5a15c09e86",
+      "security": "auto",
+      "alter_id": 0
+    },
+    {
+      "type": "vmess",
+      "tag": "JMS-621627@c85s4.portablesubmarines.com:15236",
+      "server": "212.50.247.240",
+      "server_port": 15236,
+      "uuid": "deaf6bc0-4beb-4f1c-8f84-8c5a15c09e86",
+      "security": "auto",
+      "alter_id": 0
+    },
+    {
+      "type": "vmess",
+      "tag": "JMS-621627@c85s5.portablesubmarines.com:15236",
+      "server": "162.248.78.72",
+      "server_port": 15236,
+      "uuid": "deaf6bc0-4beb-4f1c-8f84-8c5a15c09e86",
+      "security": "auto",
+      "alter_id": 0
+    },
+    {
+      "type": "vmess",
+      "tag": "JMS-621627@c85s801.portablesubmarines.com:15236",
+      "server": "176.122.169.185",
+      "server_port": 15236,
+      "uuid": "deaf6bc0-4beb-4f1c-8f84-8c5a15c09e86",
+      "security": "auto",
+      "alter_id": 0
+    },
+    {
+      "type": "selector",
+      "tag": "PROXY",
+      "outbounds": [
+        "DIRECT",
+        "AUTO",
+        "JMS-621627@c85s1.portablesubmarines.com:15236",
+        "JMS-621627@c85s2.portablesubmarines.com:15236",
+        "JMS-621627@c85s3.portablesubmarines.com:15236",
+        "JMS-621627@c85s4.portablesubmarines.com:15236",
+        "JMS-621627@c85s5.portablesubmarines.com:15236",
+        "JMS-621627@c85s801.portablesubmarines.com:15236"
+      ],
+      "default": "AUTO"
+    },
+    {
+      "type": "urltest",
+      "tag": "AUTO",
+      "outbounds": [
+        "JMS-621627@c85s1.portablesubmarines.com:15236",
+        "JMS-621627@c85s2.portablesubmarines.com:15236",
+        "JMS-621627@c85s3.portablesubmarines.com:15236",
+        "JMS-621627@c85s4.portablesubmarines.com:15236",
+        "JMS-621627@c85s5.portablesubmarines.com:15236",
+        "JMS-621627@c85s801.portablesubmarines.com:15236"
+      ],
+      "url": "http://cp.cloudflare.com/generate_204",
+      "interval": "5m"
+    }
+  ],
+  "route": {
+    "rules": [
+      { "action": "sniff" },
+      { "protocol": "dns", "action": "hijack-dns" },
+      { "ip_is_private": true, "action": "route", "outbound": "DIRECT" },
+      {
+        "clash_mode": "关闭代理",
+        "action": "route",
+        "outbound": "DIRECT"
+      },
+      {
+        "clash_mode": "全局代理",
+        "action": "route",
+        "outbound": "PROXY"
+      },
+      {
+        "domain": [
+          "instant.arubanetworks.com",
+          "setmeup.arubanetworks.com",
+          "router.asus.com",
+          "www.asusrouter.com"
+        ],
+        "domain_suffix": [
+          "acl4.ssr",
+          "ip6-localhost",
+          "ip6-loopback",
+          "internal",
+          "lan",
+          "local",
+          "localhost",
+          "hiwifi.com",
+          "leike.cc",
+          "miwifi.com",
+          "my.router",
+          "p.to",
+          "peiluyou.com",
+          "phicomm.me",
+          "router.ctc",
+          "routerlogin.com",
+          "tendawifi.com",
+          "zte.home",
+          "tplogin.cn",
+          "wifi.cmcc"
+        ],
+        "ip_cidr": [
+          "0.0.0.0/8",
+          "10.0.0.0/8",
+          "100.64.0.0/10",
+          "127.0.0.0/8",
+          "169.254.0.0/16",
+          "172.16.0.0/12",
+          "192.168.0.0/16",
+          "198.18.0.0/16",
+          "224.0.0.0/4",
+          "::1/128",
+          "fc00::/7",
+          "fe80::/10",
+          "fd00::/8"
+        ],
+        "action": "route",
+        "outbound": "DIRECT"
+      },
+      {
+        "domain_suffix": ["adobe.io", "adobestats.io"],
+        "action": "reject"
+      },
+      {
+        "domain_suffix": ["www.bing.com", "linkedin.com", "whastapp.net", "raw.githubusercontent.com"],
+        "action": "route",
+        "outbound": "PROXY"
+      },
+      {
+        "domain_keyword": ["google"],
+        "action": "route",
+        "outbound": "PROXY"
+      },
+      {
+        "domain_suffix": ["jd.com", "dingtalk.com", "ddns.leskur.cn", "needvpn.work"],
+        "action": "route",
+        "outbound": "DIRECT"
+      },
+      {
+        "domain_keyword": ["china"],
+        "action": "route",
+        "outbound": "DIRECT"
+      },
+      {
+        "domain_suffix": ["cn"],
+        "action": "route",
+        "outbound": "DIRECT"
+      }
+    ],
+    "auto_detect_interface": true,
+    "final": "PROXY",
+    "default_domain_resolver": { "server": "remote" }
+  },
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "127.0.0.1:9090",
+      "default_mode": "规则代理"
+    }
+  }
+}

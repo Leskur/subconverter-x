@@ -45,7 +45,7 @@ function splitLines(text: string): string[] {
     .filter((line) => line.length > 0 && !line.startsWith('#'))
 }
 
-export type SubscriptionFormat = 'clash' | 'singbox' | 'base64' | 'uri-list'
+export type SubscriptionFormat = 'clash' | 'base64' | 'uri-list'
 
 export interface ParseSubscriptionResult {
   format: SubscriptionFormat
@@ -53,24 +53,10 @@ export interface ParseSubscriptionResult {
   proxyGroups?: unknown[]
   rules?: string[]
   topLevel?: Record<string, unknown>
-  raw?: string
-}
-
-function isSingboxConfig(text: string): boolean {
-  try {
-    const obj = JSON.parse(text)
-    return obj && typeof obj === 'object' && ('outbounds' in obj || 'inbounds' in obj)
-  } catch {
-    return false
-  }
 }
 
 export function parseSubscription(raw: string): ParseSubscriptionResult {
   const trimmed = raw.trim()
-
-  if (isSingboxConfig(trimmed)) {
-    return { format: 'singbox', nodes: [], raw: trimmed }
-  }
 
   const clash = parseClashConfig(trimmed)
   if (clash.nodes.length > 0) {

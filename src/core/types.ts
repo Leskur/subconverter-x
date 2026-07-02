@@ -1,6 +1,6 @@
 export type ProxyType = 'vless' | 'shadowsocks' | 'trojan' | 'vmess' | 'hysteria2' | 'raw'
 
-export type ClientType = 'singbox' | 'clash' | 'surge' | 'surfboard' | 'loon' | 'quanx'
+export type ClientType = 'clash' | 'surge' | 'surfboard' | 'loon' | 'quanx'
 
 export interface BaseProxy {
   type: ProxyType

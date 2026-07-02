@@ -36,7 +36,7 @@ export function getOpenApiSpec(serverUrl: string): Record<string, unknown> {
               description: '强制指定目标客户端，优先级高于 UA 自动检测',
               schema: {
                 type: 'string',
-                enum: ['singbox', 'clash', 'surge', 'surfboard', 'loon', 'quanx'],
+                enum: ['clash', 'surge', 'surfboard', 'loon', 'quanx'],
               },
             },
             {

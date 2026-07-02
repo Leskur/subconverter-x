@@ -2,10 +2,8 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { appDataDir } from '../utils/paths.js'
 
-export type TemplateType = 'clash' | 'singbox'
-
-function templateFilePath(type: TemplateType): string {
-  return join(appDataDir(), 'templates', `template-${type}.${type === 'singbox' ? 'json' : 'yaml'}`)
+function templateFilePath(): string {
+  return join(appDataDir(), 'templates', 'template-clash.yaml')
 }
 
 const DEFAULT_CLASH_TEMPLATE = `mixed-port: 7890
@@ -22,52 +20,29 @@ proxy-groups:
     proxies: []
 `
 
-const DEFAULT_SINGBOX_TEMPLATE = `{
-  "inbounds": [
-    { "type": "mixed", "listen": "127.0.0.1", "listen_port": 7890 },
-    {
-      "type": "tun",
-      "address": ["172.19.0.1/30", "fdfe:dcba:9876::1/126"],
-      "auto_route": true,
-      "strict_route": true,
-      "stack": "system"
-    }
-  ],
-  "outbounds": [],
-  "route": {
-    "final": "PROXY",
-    "auto_detect_interface": true
-  },
-  "experimental": {
-    "cache_file": { "enabled": true },
-    "clash_api": { "external_controller": "127.0.0.1:9090", "default_mode": "rule" }
-  }
-}
-`
-
 export interface TemplateStore {
-  get(type: TemplateType): Promise<string>
-  getDefault(type: TemplateType): string
-  save(type: TemplateType, content: string): Promise<void>
+  get(): Promise<string>
+  getDefault(): string
+  save(content: string): Promise<void>
 }
 
 export class FileTemplateStore implements TemplateStore {
-  getDefault(type: TemplateType): string {
-    return type === 'singbox' ? DEFAULT_SINGBOX_TEMPLATE : DEFAULT_CLASH_TEMPLATE
+  getDefault(): string {
+    return DEFAULT_CLASH_TEMPLATE
   }
 
-  async get(type: TemplateType): Promise<string> {
-    const path = templateFilePath(type)
+  async get(): Promise<string> {
+    const path = templateFilePath()
     try {
       return await readFile(path, 'utf8')
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
-      return this.getDefault(type)
+      return this.getDefault()
     }
   }
 
-  async save(type: TemplateType, content: string): Promise<void> {
-    const path = templateFilePath(type)
+  async save(content: string): Promise<void> {
+    const path = templateFilePath()
     await mkdir(dirname(path), { recursive: true })
     await writeFile(path, content, 'utf8')
   }

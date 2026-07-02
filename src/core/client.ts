@@ -1,10 +1,6 @@
 import type { ClientType } from './types.js'
 
 const CLIENT_ALIASES: Record<string, ClientType> = {
-  singbox: 'singbox',
-  'sing-box': 'singbox',
-  sfa: 'singbox',
-  sfi: 'singbox',
   clash: 'clash',
   mihomo: 'clash',
   'clash.meta': 'clash',
@@ -28,10 +24,6 @@ export function normalizeClient(value: string | undefined): ClientType | null {
 export function detectClientFromUserAgent(userAgent: string | undefined): ClientType | null {
   if (!userAgent) return null
   const ua = userAgent.toLowerCase()
-
-  if (ua.includes('sing-box') || ua.includes('singbox') || ua.includes('sfa') || ua.includes('sfi')) {
-    return 'singbox'
-  }
 
   if (ua.includes('clash.meta') || ua.includes('clash meta') || ua.includes('mihomo') || ua.includes('clash')) {
     return 'clash'
@@ -59,7 +51,7 @@ export function detectClientFromUserAgent(userAgent: string | undefined): Client
 export function resolveClient(
   userAgent: string | undefined,
   forceClient: string | undefined,
-  fallback: ClientType = 'singbox',
+  fallback: ClientType = 'clash',
 ): ClientType {
   return normalizeClient(forceClient) ?? detectClientFromUserAgent(userAgent) ?? fallback
 }
