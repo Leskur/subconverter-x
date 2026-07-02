@@ -39,7 +39,7 @@ export interface ConvertOptions extends IngestOptions {
   fallbackUserAgent?: string
 }
 
-const DEFAULT_FALLBACK_USER_AGENT = 'clash.meta'
+const DEFAULT_FALLBACK_USER_AGENT = 'clash-verge/v2.5.1'
 
 const CLIENT_UA: Record<string, string> = {
   clash: 'ClashforWindows/0.20.39',
@@ -70,7 +70,7 @@ export async function convertSubscription(
 ): Promise<ConvertResult> {
   const userAgent = input.requestHeaders?.get('user-agent') ?? undefined
 
-  const overrideUa = isBrowserUserAgent(userAgent) ? 'clash.meta' : undefined
+  const overrideUa = isBrowserUserAgent(userAgent) ? 'clash-verge/v2.5.1' : undefined
   const body = await ingestSubscription(input.upstreamUrl, {
     ...options,
     requestHeaders: input.requestHeaders,
